@@ -7,8 +7,8 @@ A quick reference for common tasks when working with the repository.
 ### Translate a poem
 
 ```bash
-# 1. Navigate to the work
-cd authors/{author-id}/works/{work-id}/content/
+# 1. Navigate to the work in content/ directory
+cd content/authors/{author-id}/works/{work-id}/
 
 # 2. Copy the original Markdown file
 cp be.md es.md  # For Spanish
@@ -36,12 +36,11 @@ cp be.md es.md  # For Spanish
 #
 # (... rest of translation ...)
 
-# 4. Build JSON files
+# 4. Build JSON files (from repo root)
 cd ../../../../
 python3 build.py
 
-# 5. Update metadata.json
-# Edit metadata.json: add "es" to available_translations
+# 5. Metadata is auto-generated (no manual updates needed!)
 
 # 6. Validate
 python3 validate.py
@@ -82,10 +81,10 @@ Then run `python3 build.py` to generate JSON.
 
 ```bash
 # 1. Create directory structure
-mkdir -p authors/lastname-firstname/works
+mkdir -p content/authors/lastname-firstname/works
 
 # 2. Create author info
-cat > authors/lastname-firstname/info.json << 'EOF'
+cat > content/authors/lastname-firstname/info.json << 'EOF'
 {
   "id": "lastname-firstname",
   "names": {
@@ -116,10 +115,10 @@ python3 validate.py
 
 ```bash
 # 1. Create directory structure
-mkdir -p authors/{author-id}/works/{work-id}/content
+mkdir -p content/authors/{author-id}/works/{work-id}
 
 # 2. Create metadata
-cat > authors/{author-id}/works/{work-id}/metadata.json << 'EOF'
+cat > content/authors/{author-id}/works/{work-id}/metadata.json << 'EOF'
 {
   "id": "work-id",
   "author_id": "author-id",
@@ -131,7 +130,6 @@ cat > authors/{author-id}/works/{work-id}/metadata.json << 'EOF'
   "year_written": 1920,
   "year_published": 1920,
   "original_language": "be",
-  "available_translations": ["be"],
   "tags": {
     "be": ["паэзія"],
     "en": ["poetry"]
@@ -139,8 +137,8 @@ cat > authors/{author-id}/works/{work-id}/metadata.json << 'EOF'
 }
 EOF
 
-# 3. Add Belarusian content
-cat > authors/{author-id}/works/{work-id}/content/be.json << 'EOF'
+# 3. Add Belarusian content as Markdown
+cat > content/authors/{author-id}/works/{work-id}/be.md << 'EOF'
 {
   "language": "be",
   "work_id": "work-id",
@@ -305,12 +303,12 @@ git push origin main
 
 ## Common File Locations
 
-- Author info: `authors/{author-id}/info.json`
-- Work metadata: `authors/{author-id}/works/{work-id}/metadata.json`
-- Work content: `authors/{author-id}/works/{work-id}/content/{lang}.json`
-- Languages list: `metadata/languages.json`
-- Repository index: `metadata/index.json`
-- Translation status: `translations/status.json`
+- Author info: `content/authors/{author-id}/info.json`
+- Work metadata: `content/authors/{author-id}/works/{work-id}/metadata.json`
+- Work content (Markdown): `content/authors/{author-id}/works/{work-id}/{lang}.md`
+- Generated JSON: `public/authors/{author-id}/works/{work-id}/content/{lang}.json`
+- Languages list: `content/metadata/languages.json`
+- Auto-generated index: `public/metadata/index.json` (DO NOT EDIT - auto-generated)
 
 ## Naming Conventions Quick Reference
 

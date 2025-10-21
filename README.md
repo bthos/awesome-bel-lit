@@ -22,24 +22,30 @@ This repository contains classic and contemporary Belarusian literature translat
 
 ```
 awesome-bel-lit/
-├── authors/              # Author information and works
-│   └── {author-id}/
-│       ├── info.json     # Author metadata
-│       └── works/
-│           └── {work-id}/
-│               ├── metadata.json
-│               └── content/
-│                   ├── be.md      # Belarusian (Markdown - for authors)
-│                   ├── be.json    # Belarusian (JSON - auto-generated)
-│                   ├── en.md      # English (Markdown)
-│                   ├── en.json    # English (JSON - auto-generated)
-│                   └── ...
-├── metadata/            # Repository-wide metadata
-│   ├── languages.json   # Supported languages
-│   └── index.json       # Complete content index
-├── translations/        # Translation progress
-│   └── status.json
-└── build.py            # Converts .md to .json
+├── content/              # SOURCE - Content authors work here
+│   ├── authors/          # Author information and works
+│   │   └── {author-id}/
+│   │       ├── info.json     # Author metadata
+│   │       └── works/
+│   │           └── {work-id}/
+│   │               ├── metadata.json
+│   │               ├── be.md         # Belarusian (Markdown)
+│   │               ├── en.md         # English (Markdown)
+│   │               └── ...
+│   └── metadata/         # Repository-wide metadata
+│       └── languages.json
+├── public/               # GENERATED - Built for front-end (auto-generated)
+│   ├── authors/
+│   │   └── {author-id}/
+│   │       └── works/
+│   │           └── {work-id}/
+│   │               └── content/
+│   │                   ├── be.json   # Auto-generated from be.md
+│   │                   └── en.json   # Auto-generated from en.md
+│   └── metadata/
+│       ├── index.json    # AUTO-GENERATED from source
+│       └── languages.json
+└── build.py             # Converts content/ -> public/
 ```
 
 ## Quick Start
@@ -51,33 +57,34 @@ awesome-bel-lit/
 git clone https://github.com/bthos/awesome-bel-lit.git
 cd awesome-bel-lit
 
-# Browse authors
-ls authors/
+# Browse authors (source files)
+ls content/authors/
 
 # View an author's works
-cat authors/kupala-yanka/info.json
-ls authors/kupala-yanka/works/
+cat content/authors/kupala-yanka/info.json
+ls content/authors/kupala-yanka/works/
 
 # Read a work in Belarusian (Markdown - easy to read!)
-cat authors/kupala-yanka/works/who-goes-there/content/be.md
+cat content/authors/kupala-yanka/works/who-goes-there/be.md
 
-# Or use the JSON format (for API consumption)
-cat authors/kupala-yanka/works/who-goes-there/content/be.json
+# Build public files (generates JSON for front-end)
+python3 build.py
 
-# Read a translation
-cat authors/kupala-yanka/works/who-goes-there/content/en.md
+# Or use the generated JSON
+cat public/authors/kupala-yanka/works/who-goes-there/content/be.json
 ```
 
 ### Add a Translation
 
 ```bash
-# 1. Copy the original
-cd authors/kupala-yanka/works/who-goes-there/content/
+# 1. Copy the original in content/ directory
+cd content/authors/kupala-yanka/works/who-goes-there/
 cp be.md es.md  # For Spanish
 
 # 2. Edit es.md - it's just Markdown with frontmatter!
+
 # 3. Build JSON files
-cd ../../../..
+cd ../../../../
 python3 build.py
 
 # 4. Validate
@@ -89,19 +96,26 @@ python3 validate.py
 ### Use in Your Application
 
 ```javascript
-// Fetch author information
+// Fetch author information from public directory
 const response = await fetch(
-  'https://raw.githubusercontent.com/bthos/awesome-bel-lit/main/authors/kupala-yanka/info.json'
+  'https://raw.githubusercontent.com/bthos/awesome-bel-lit/main/public/authors/kupala-yanka/info.json'
 );
 const author = await response.json();
 console.log(author.names.en); // "Yanka Kupala"
 
 // Fetch a work
 const work = await fetch(
-  'https://raw.githubusercontent.com/bthos/awesome-bel-lit/main/authors/kupala-yanka/works/who-goes-there/content/en.json'
+  'https://raw.githubusercontent.com/bthos/awesome-bel-lit/main/public/authors/kupala-yanka/works/who-goes-there/content/en.json'
 );
 const content = await work.json();
 console.log(content.title); // "Who Goes There?"
+
+// Fetch the auto-generated index
+const indexResp = await fetch(
+  'https://raw.githubusercontent.com/bthos/awesome-bel-lit/main/public/metadata/index.json'
+);
+const index = await indexResp.json();
+console.log(index.authors); // All authors with their works
 ```
 
 ## Contributing
