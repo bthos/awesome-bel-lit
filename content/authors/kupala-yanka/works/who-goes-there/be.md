@@ -1,11 +1,5 @@
 ---
-language: be
-work_id: who-goes-there
-author_id: kupala-yanka
 title: Хто там ідзе?
-content_type: poem
-translator: null
-translation_year: null
 ---
 
 Хто там ідзе? Хто там ідзе

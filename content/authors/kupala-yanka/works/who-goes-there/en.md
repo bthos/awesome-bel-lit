@@ -1,9 +1,5 @@
 ---
-language: en
-work_id: who-goes-there
-author_id: kupala-yanka
 title: Who Goes There?
-content_type: poem
 translator: Example Translation
 translation_year: 2024
 notes:

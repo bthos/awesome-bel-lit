@@ -27,15 +27,11 @@ The repository supports **two formats** for content:
 
 ### Poetry Example
 
+Minimalist frontmatter - most data derived from folder structure:
+
 ```markdown
 ---
-language: be
-work_id: who-goes-there
-author_id: kupala-yanka
 title: Хто там ідзе?
-content_type: poem
-translator: null
-translation_year: null
 ---
 
 Хто там ідзе? Хто там ідзе
@@ -43,23 +39,13 @@ translation_year: null
 
 — Свой, брат, свой! Беларус наш,
 Што ноччу ў полі сеча.
-
-— Ідзі ж сюды, садзіся тут.
-— Не магу. Няма часу.
-
-— А што ж ты нясеш? Куды ж ідзеш?
-— На стрэчу дню. Свабоду.
 ```
 
 ### Prose Example
 
 ```markdown
 ---
-language: en
-work_id: my-story
-author_id: author-name
 title: My Story
-content_type: prose
 translator: Translator Name
 translation_year: 2024
 notes:
@@ -78,22 +64,34 @@ The story concludes in this final paragraph with resolution and reflection.
 
 ### YAML Frontmatter (Required)
 
-All Markdown files **must** start with YAML frontmatter between `---` markers:
+All Markdown files **must** start with YAML frontmatter between `---` markers.
+
+**Minimalist approach** - most metadata derived from folder structure:
 
 ```yaml
 ---
-language: en              # ISO 639-1 language code
-work_id: work-identifier  # Matches directory name
-author_id: author-id      # Matches author directory
-title: Work Title         # Translated title
-content_type: poem        # 'poem' or 'prose'
-translator: Name          # Translator name (or null for original)
-translation_year: 2024    # Year translated (or null)
-notes:                    # Optional cultural/translation notes
+title: Work Title              # Title in this language (REQUIRED)
+translator: Name               # Translator name (OPTIONAL, omit for originals)
+translation_year: 2024         # Year translated (OPTIONAL)
+notes:                         # Translation/cultural notes (OPTIONAL)
   - reference: stanza:2
     text: Note text here
 ---
 ```
+
+**Auto-derived fields** (from folder structure):
+- `language` - From filename (e.g., `be.md` → `be`)
+- `work_id` - From work folder name (e.g., `who-goes-there`)
+- `author_id` - From author folder name (e.g., `kupala-yanka`)
+- `content_type` - From `metadata.json` file in work folder
+
+**Required field:**
+- `title` - The title in this language
+
+**Optional fields:**
+- `translator` - Name of translator (omit for original works)
+- `translation_year` - Year of translation
+- `notes` - Array of translation or cultural notes
 
 ### Content Body
 

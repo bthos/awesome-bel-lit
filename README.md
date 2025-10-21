@@ -23,17 +23,17 @@ This repository contains classic and contemporary Belarusian literature translat
 ```
 awesome-bel-lit/
 ├── content/              # SOURCE - Content authors work here
-│   ├── authors/          # Author information and works
-│   │   └── {author-id}/
-│   │       ├── info.json     # Author metadata
-│   │       └── works/
-│   │           └── {work-id}/
-│   │               ├── metadata.json
-│   │               ├── be.md         # Belarusian (Markdown)
-│   │               ├── en.md         # English (Markdown)
-│   │               └── ...
-│   └── metadata/         # Repository-wide metadata
-│       └── languages.json
+│   └── authors/          # Author information and works
+│       └── {author-id}/
+│           ├── info.json     # Author metadata
+│           └── works/
+│               └── {work-id}/
+│                   ├── metadata.json  # Work metadata (no IDs)
+│                   ├── be.md          # Belarusian (Markdown)
+│                   ├── en.md          # English (Markdown)
+│                   └── ...
+├── config/               # Configuration files
+│   └── languages.json    # Supported languages
 ├── public/               # GENERATED - Built for front-end (auto-generated)
 │   ├── authors/
 │   │   └── {author-id}/

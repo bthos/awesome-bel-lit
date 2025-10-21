@@ -13,20 +13,9 @@ cd content/authors/{author-id}/works/{work-id}/
 # 2. Copy the original Markdown file
 cp be.md es.md  # For Spanish
 
-# 3. Edit es.md with your translation
-# - Update language: es
-# - Translate title
-# - Translate all text (keep stanza structure)
-# - Add your name as translator
-# - Add translation year
-
-# Example es.md:
+# 3. Edit es.md with your translation (minimalist frontmatter!)
 # ---
-# language: es
-# work_id: who-goes-there
-# author_id: kupala-yanka
 # title: ¿Quién va allí?
-# content_type: poem
 # translator: Your Name
 # translation_year: 2024
 # ---
