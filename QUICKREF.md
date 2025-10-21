@@ -296,7 +296,7 @@ git push origin main
 - Work metadata: `content/authors/{author-id}/works/{work-id}/metadata.json`
 - Work content (Markdown): `content/authors/{author-id}/works/{work-id}/{lang}.md`
 - Generated JSON: `public/authors/{author-id}/works/{work-id}/content/{lang}.json`
-- Languages list: `content/metadata/languages.json`
+- Languages list: `public/metadata/languages.json`
 - Auto-generated index: `public/metadata/index.json` (DO NOT EDIT - auto-generated)
 
 ## Naming Conventions Quick Reference

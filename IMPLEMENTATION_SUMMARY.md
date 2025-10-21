@@ -52,7 +52,8 @@ awesome-bel-lit/
 │                   ├── en.json   # English translation
 │                   └── *.json    # Other translations
 ├── metadata/
-│   ├── languages.json            # Supported languages
+│   └── metadata/
+│       ├── languages.json        # Supported languages
 │   └── index.json                # Complete content index
 ├── translations/
 │   └── status.json               # Translation progress

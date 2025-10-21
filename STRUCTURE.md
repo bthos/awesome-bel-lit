@@ -25,7 +25,8 @@ awesome-bel-lit/
 │                   └── ...            # Other language translations
 │
 ├── public/              # GENERATED + CONFIG - Built for front-end
-│   ├── languages.json   # Supported languages (configuration)
+│   └── metadata/
+│       ├── languages.json   # Supported languages (configuration)
 │   ├── authors/         # Processed author data
 │   │   └── {author-id}/
 │   │       ├── info.json    # Copied from source

@@ -120,12 +120,13 @@ Repository-wide information.
 
 ```
 metadata/
-├── languages.json   # List of all supported languages
+├── metadata/
+│   ├── languages.json   # List of all supported languages
 └── index.json       # Complete index of all content
 ```
 
 **Purpose:**
-- `languages.json`: UI language selectors, validation
+- `metadata/languages.json`: UI language selectors, validation
 - `index.json`: Quick overview, navigation, search
 
 ### `/translations/`

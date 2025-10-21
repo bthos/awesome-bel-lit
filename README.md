@@ -33,7 +33,8 @@ awesome-bel-lit/
 │                   ├── en.md          # English (title + tags)
 │                   └── ...
 ├── public/               # GENERATED + CONFIG - Built for front-end
-│   ├── languages.json    # Supported languages (config)
+│   └── metadata/
+│       ├── languages.json    # Supported languages (config)
 │   ├── authors/
 │   │   └── {author-id}/
 │   │       └── works/
@@ -203,7 +204,7 @@ https://raw.githubusercontent.com/bthos/awesome-bel-lit/main/{path}
 - Author info: `/authors/{author-id}/info.json`
 - Work metadata: `/authors/{author-id}/works/{work-id}/metadata.json`
 - Work content: `/authors/{author-id}/works/{work-id}/content/{lang}.json`
-- Languages list: `/metadata/languages.json`
+- Languages list: `public/metadata/languages.json`
 - Complete index: `/metadata/index.json`
 - Translation status: `/translations/status.json`
 

@@ -113,7 +113,7 @@ def build_public_files(repo_root):
     # Clean and recreate public directory (except languages.json)
     if public_dir.exists():
         # Save languages.json if it exists
-        languages_file = public_dir / 'languages.json'
+        languages_file = public_dir / 'metadata' / 'languages.json'
         languages_data = None
         if languages_file.exists():
             with open(languages_file, 'r', encoding='utf-8') as f:
@@ -122,8 +122,10 @@ def build_public_files(repo_root):
         shutil.rmtree(public_dir)
         public_dir.mkdir(parents=True)
         
-        # Restore languages.json
+        # Restore languages.json to metadata directory
         if languages_data:
+            metadata_dir = public_dir / 'metadata'
+            metadata_dir.mkdir(exist_ok=True)
             with open(languages_file, 'w', encoding='utf-8') as f:
                 f.write(languages_data)
     else:
@@ -280,12 +282,12 @@ def build_public_files(repo_root):
     
     print(f"✓ Generated metadata/index.json")
     
-    # Languages.json is already in public/ (manually maintained configuration)
-    languages_file = public_dir / 'languages.json'
+    # Languages.json is in public/metadata/ (manually maintained configuration)
+    languages_file = public_metadata_dir / 'languages.json'
     if languages_file.exists():
-        print(f"✓ Using languages.json from public/")
+        print(f"✓ Using languages.json from public/metadata/")
     else:
-        print(f"⚠ Warning: public/languages.json not found")
+        print(f"⚠ Warning: public/metadata/languages.json not found")
     
     print(f"\n✓ Converted {converted_count} file(s)")
     print(f"✓ Generated index with {len(authors_data)} author(s)")
