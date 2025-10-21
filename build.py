@@ -1,15 +1,23 @@
 #!/usr/bin/env python3
 """
-Build script to convert Markdown content files to JSON format.
-This allows content authors to write in Markdown (easier) while maintaining
-JSON files for API consumption.
+Build script to generate public-facing files from source content.
+
+This script:
+1. Converts Markdown content files to JSON format
+2. Copies source files to public directory
+3. Auto-generates metadata/index.json from source content
+
+Directory structure:
+- content/        - SOURCE (what content authors edit)
+- public/         - GENERATED (what front-end consumes)
 """
 
 import json
 import os
-import re
+import shutil
 from pathlib import Path
 import yaml
+from datetime import datetime
 
 
 def parse_markdown_content(markdown_path):
@@ -51,7 +59,7 @@ def parse_markdown_content(markdown_path):
         "notes": frontmatter.get('notes', [])
     }
     
-    return json_data
+    return json_data, frontmatter
 
 
 def parse_poem(text):
@@ -88,43 +96,156 @@ def parse_prose(text):
     return paragraphs
 
 
-def build_json_files(repo_root):
-    """Build all JSON files from Markdown sources."""
-    authors_dir = repo_root / 'authors'
+def build_public_files(repo_root):
+    """Build all public files from source content."""
+    content_dir = repo_root / 'content'
+    public_dir = repo_root / 'public'
     
+    if not content_dir.exists():
+        print("Error: 'content' directory not found")
+        return
+    
+    # Clean and recreate public directory
+    if public_dir.exists():
+        shutil.rmtree(public_dir)
+    public_dir.mkdir(parents=True)
+    
+    authors_dir = content_dir / 'authors'
     if not authors_dir.exists():
-        print("No 'authors' directory found")
+        print("Error: 'content/authors' directory not found")
         return
     
     converted_count = 0
+    authors_data = []
     
-    # Find all .md files in content directories
-    for md_file in authors_dir.glob('*/works/*/content/*.md'):
-        # Generate corresponding JSON file path
-        json_file = md_file.with_suffix('.json')
+    # Process each author
+    for author_dir in sorted(authors_dir.iterdir()):
+        if not author_dir.is_dir():
+            continue
         
-        try:
-            # Parse Markdown and generate JSON
-            json_data = parse_markdown_content(md_file)
+        author_id = author_dir.name
+        author_info_file = author_dir / 'info.json'
+        
+        if not author_info_file.exists():
+            continue
+        
+        # Load author info
+        with open(author_info_file, 'r', encoding='utf-8') as f:
+            author_info = json.load(f)
+        
+        # Copy author info to public
+        public_author_dir = public_dir / 'authors' / author_id
+        public_author_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(author_info_file, public_author_dir / 'info.json')
+        
+        works_dir = author_dir / 'works'
+        if not works_dir.exists():
+            continue
+        
+        works_data = []
+        
+        # Process each work
+        for work_dir in sorted(works_dir.iterdir()):
+            if not work_dir.is_dir():
+                continue
             
-            # Write JSON file
-            with open(json_file, 'w', encoding='utf-8') as f:
-                json.dump(json_data, f, ensure_ascii=False, indent=2)
+            work_id = work_dir.name
+            metadata_file = work_dir / 'metadata.json'
             
-            print(f"✓ Converted {md_file.relative_to(repo_root)} -> {json_file.name}")
-            converted_count += 1
+            if not metadata_file.exists():
+                continue
             
-        except Exception as e:
-            print(f"✗ Error converting {md_file.relative_to(repo_root)}: {e}")
+            # Load work metadata
+            with open(metadata_file, 'r', encoding='utf-8') as f:
+                work_metadata = json.load(f)
+            
+            # Copy work metadata to public
+            public_work_dir = public_author_dir / 'works' / work_id
+            public_work_dir.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(metadata_file, public_work_dir / 'metadata.json')
+            
+            # Create content directory in public
+            public_content_dir = public_work_dir / 'content'
+            public_content_dir.mkdir(exist_ok=True)
+            
+            # Find all .md files and convert to JSON
+            available_languages = []
+            for md_file in sorted(work_dir.glob('*.md')):
+                try:
+                    # Parse Markdown and generate JSON
+                    json_data, frontmatter = parse_markdown_content(md_file)
+                    lang_code = md_file.stem
+                    available_languages.append(lang_code)
+                    
+                    # Write JSON file to public directory
+                    json_file = public_content_dir / f'{lang_code}.json'
+                    with open(json_file, 'w', encoding='utf-8') as f:
+                        json.dump(json_data, f, ensure_ascii=False, indent=2)
+                    
+                    print(f"✓ Converted {md_file.relative_to(content_dir)} -> {json_file.relative_to(public_dir)}")
+                    converted_count += 1
+                    
+                except Exception as e:
+                    print(f"✗ Error converting {md_file.relative_to(content_dir)}: {e}")
+            
+            # Add work to index
+            works_data.append({
+                "id": work_id,
+                "title": work_metadata.get('titles', {}),
+                "type": work_metadata.get('type', 'unknown'),
+                "year": work_metadata.get('year_written'),
+                "available_languages": available_languages
+            })
+        
+        # Add author to index
+        authors_data.append({
+            "id": author_id,
+            "name": author_info.get('names', {}),
+            "works_count": len(works_data),
+            "works": works_data
+        })
     
-    print(f"\nConverted {converted_count} file(s)")
+    # Generate index.json
+    index_data = {
+        "version": "1.0.0",
+        "last_updated": datetime.now().strftime("%Y-%m-%d"),
+        "authors": authors_data,
+        "statistics": {
+            "total_authors": len(authors_data),
+            "total_works": sum(a['works_count'] for a in authors_data),
+            "total_translations": converted_count,
+            "languages_with_content": list(set(
+                lang for author in authors_data 
+                for work in author['works'] 
+                for lang in work['available_languages']
+            ))
+        }
+    }
+    
+    # Write index.json to public
+    public_metadata_dir = public_dir / 'metadata'
+    public_metadata_dir.mkdir(parents=True, exist_ok=True)
+    
+    with open(public_metadata_dir / 'index.json', 'w', encoding='utf-8') as f:
+        json.dump(index_data, f, ensure_ascii=False, indent=2)
+    
+    print(f"✓ Generated metadata/index.json")
+    
+    # Copy languages.json if it exists
+    languages_file = content_dir / 'metadata' / 'languages.json'
+    if languages_file.exists():
+        shutil.copy2(languages_file, public_metadata_dir / 'languages.json')
+        print(f"✓ Copied metadata/languages.json")
+    
+    print(f"\n✓ Converted {converted_count} file(s)")
+    print(f"✓ Generated index with {len(authors_data)} author(s)")
 
 
 def main():
     """Main entry point."""
     repo_root = Path(__file__).parent
-    print(f"Building JSON files from Markdown sources...\n")
-    build_json_files(repo_root)
+    print(f"Building public files from source content...\n")
+    build_public_files(repo_root)
     print("\n✓ Build complete!")
 
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Validation script for awesome-bel-lit repository structure.
-Checks JSON files for validity and structure consistency.
+Checks JSON files for validity and structure consistency in the PUBLIC directory.
 """
 
 import json
@@ -58,7 +58,7 @@ def validate_work_metadata(filepath, author_id, work_id):
     errors = []
     
     # Check required fields
-    required_fields = ['id', 'author_id', 'type', 'titles', 'original_language', 'available_translations']
+    required_fields = ['id', 'author_id', 'type', 'titles', 'original_language']
     for field in required_fields:
         if field not in data:
             errors.append(f"Missing required field: {field}")
@@ -72,10 +72,6 @@ def validate_work_metadata(filepath, author_id, work_id):
     # Check titles structure
     if 'titles' in data and not isinstance(data['titles'], dict):
         errors.append("'titles' must be an object with language codes")
-    
-    # Check available_translations is a list
-    if 'available_translations' in data and not isinstance(data['available_translations'], list):
-        errors.append("'available_translations' must be an array")
     
     return errors
 
@@ -111,10 +107,15 @@ def validate_work_content(filepath, work_id, author_id, lang_code):
 def main():
     """Main validation function."""
     repo_root = Path(__file__).parent
-    authors_dir = repo_root / 'authors'
+    public_dir = repo_root / 'public'
     
+    if not public_dir.exists():
+        print("Error: 'public' directory not found. Run 'python3 build.py' first.")
+        sys.exit(1)
+    
+    authors_dir = public_dir / 'authors'
     if not authors_dir.exists():
-        print("Error: 'authors' directory not found")
+        print("Error: 'public/authors' directory not found")
         sys.exit(1)
     
     total_files = 0
@@ -188,7 +189,7 @@ def main():
                                     errors_found.append(f"{content_file}: {err}")
     
     # Validate metadata files
-    metadata_dir = repo_root / 'metadata'
+    metadata_dir = public_dir / 'metadata'
     if metadata_dir.exists():
         for metadata_file in metadata_dir.glob('*.json'):
             total_files += 1
@@ -196,16 +197,6 @@ def main():
             if not valid:
                 invalid_files += 1
                 errors_found.append(f"{metadata_file}: {error}")
-    
-    # Validate translations status
-    translations_dir = repo_root / 'translations'
-    if translations_dir.exists():
-        for trans_file in translations_dir.glob('*.json'):
-            total_files += 1
-            valid, error = validate_json_file(trans_file)
-            if not valid:
-                invalid_files += 1
-                errors_found.append(f"{trans_file}: {error}")
     
     # Print results
     print(f"Validation complete!")
