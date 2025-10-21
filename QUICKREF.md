@@ -10,25 +10,43 @@ A quick reference for common tasks when working with the repository.
 # 1. Navigate to the work
 cd authors/{author-id}/works/{work-id}/content/
 
-# 2. Copy the original
-cp be.json es.json  # For Spanish
+# 2. Copy the original Markdown file
+cp be.md es.md  # For Spanish
 
-# 3. Edit es.json with your translation
-# - Change "language": "es"
-# - Translate "title"
-# - Translate all lines in "content"
-# - Add your name in "translator"
-# - Add year in "translation_year"
+# 3. Edit es.md with your translation
+# - Update language: es
+# - Translate title
+# - Translate all text (keep stanza structure)
+# - Add your name as translator
+# - Add translation year
 
-# 4. Update metadata
-cd ..
+# Example es.md:
+# ---
+# language: es
+# work_id: who-goes-there
+# author_id: kupala-yanka
+# title: ¿Quién va allí?
+# content_type: poem
+# translator: Your Name
+# translation_year: 2024
+# ---
+#
+# ¿Quién va allí? ¿Quién va allí
+# En esta oscuridad de la noche?
+#
+# (... rest of translation ...)
+
+# 4. Build JSON files
+cd ../../../../
+python3 build.py
+
+# 5. Update metadata.json
 # Edit metadata.json: add "es" to available_translations
 
-# 5. Validate
-cd ../../../../
+# 6. Validate
 python3 validate.py
 
-# 6. Commit
+# 7. Commit
 git add .
 git commit -m "Add Spanish translation of {work-name}"
 git push
@@ -36,18 +54,27 @@ git push
 
 ### Translate prose
 
-Same as poetry, but structure is different:
-```json
-{
-  "content": [
-    {
-      "type": "paragraph",
-      "number": 1,
-      "text": "Translated paragraph text..."
-    }
-  ]
-}
+Same as poetry, but with paragraphs instead of stanzas:
+
+```markdown
+---
+language: es
+work_id: story-example
+author_id: author-id
+title: Título del Cuento
+content_type: prose
+translator: Your Name
+translation_year: 2024
+---
+
+El primer párrafo de la historia...
+
+El segundo párrafo continúa la narrativa...
+
+El tercer párrafo concluye la sección.
 ```
+
+Then run `python3 build.py` to generate JSON.
 
 ## For Content Editors
 

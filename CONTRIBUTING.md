@@ -38,46 +38,55 @@ cd authors/{author-id}/works/{work-id}/content/
 
 ### Step 3: Create Translation File
 
-Copy the original Belarusian content:
+Copy the original Belarusian content (Markdown format):
 ```bash
-cp be.json {language-code}.json
+cp be.md {language-code}.md
 ```
 
 ### Step 4: Translate
 
-Edit the new file with your translation:
+Edit the new Markdown file with your translation:
+- Update the `language` field in the frontmatter
 - Translate the `title` field
-- Translate all content in the `content` array
+- Translate all content (preserve stanza/paragraph structure)
 - Add your name to `translator` field
 - Add current year to `translation_year` field
-- Add cultural notes if needed in `notes` array
+- Add cultural notes in frontmatter if needed
 
-Example:
-```json
-{
-  "language": "en",
-  "work_id": "who-goes-there",
-  "author_id": "kupala-yanka",
-  "title": "Who Goes There?",
-  "content_type": "poem",
-  "structure": "stanzas",
-  "content": [
-    {
-      "type": "stanza",
-      "number": 1,
-      "lines": [
-        "Who goes there? Who goes there",
-        "In this dark night?"
-      ]
-    }
-  ],
-  "translator": "Your Name",
-  "translation_year": 2024,
-  "notes": []
-}
+Example for poetry:
+```markdown
+---
+language: en
+work_id: who-goes-there
+author_id: kupala-yanka
+title: Who Goes There?
+content_type: poem
+translator: Your Name
+translation_year: 2024
+notes:
+  - reference: stanza:2
+    text: Cultural context about this stanza...
+---
+
+Who goes there? Who goes there
+In this darkness of night?
+
+— Your own, brother, your own! A Belarusian,
+Who sows in the field at night.
 ```
 
-### Step 5: Update Metadata
+**Note:** Separate stanzas with blank lines. Keep lines within a stanza on separate lines.
+
+### Step 5: Build JSON Files
+
+Generate JSON files from your Markdown:
+```bash
+python3 build.py
+```
+
+This automatically creates the corresponding `.json` file for API consumption.
+
+### Step 6: Update Metadata
 
 Edit the work's `metadata.json` file to include your language:
 ```json
@@ -86,15 +95,15 @@ Edit the work's `metadata.json` file to include your language:
 }
 ```
 
-### Step 6: Test Your Changes
+### Step 7: Test Your Changes
 
-Validate your JSON files:
+Validate your files:
 ```bash
-# Check if JSON is valid
-python3 -m json.tool authors/{author-id}/works/{work-id}/content/{lang}.json
+# Validate structure and JSON
+python3 validate.py
 ```
 
-### Step 7: Commit and Push
+### Step 8: Commit and Push
 
 ```bash
 git add .

@@ -13,15 +13,17 @@ awesome-bel-lit/
 │           └── {work-id}/    # Work directory (unique ID)
 │               ├── metadata.json  # Work metadata
 │               └── content/       # Original and translated content
-│                   ├── be.json    # Belarusian (original)
-│                   ├── en.json    # English translation
-│                   ├── ru.json    # Russian translation
+│                   ├── be.md      # Belarusian (original) - Markdown
+│                   ├── be.json    # Belarusian - JSON (auto-generated)
+│                   ├── en.md      # English translation - Markdown
+│                   ├── en.json    # English - JSON (auto-generated)
 │                   └── ...        # Other language translations
 ├── metadata/            # Repository-wide metadata
 │   ├── languages.json   # Supported languages list
 │   └── index.json       # Complete index of all content
-└── translations/        # Translation progress tracking
-    └── status.json      # Translation status by work/language
+├── translations/        # Translation progress tracking
+│   └── status.json      # Translation status by work/language
+└── build.py            # Build script (converts .md to .json)
 ```
 
 ## Naming Convention
@@ -46,6 +48,17 @@ awesome-bel-lit/
 - For regional variants, use ISO 639-1 with region: `en-US`, `en-GB`
 
 ## File Formats
+
+### Content Format Options
+
+This repository supports **two formats** for literary content:
+
+1. **Markdown (.md)** - Recommended for content authors (easy to write and edit)
+2. **JSON (.json)** - Generated automatically for API consumption
+
+**For content authors**: Write your content in Markdown format with YAML frontmatter. The JSON files are automatically generated using the `build.py` script.
+
+**For developers**: Use the JSON files for API consumption. They are kept in sync with Markdown sources.
 
 ### Author Info (`authors/{author-id}/info.json`)
 
@@ -99,7 +112,80 @@ awesome-bel-lit/
 }
 ```
 
+### Content Files (`authors/{author-id}/works/{work-id}/content/{lang}.md`)
+
+**Markdown Format (Recommended for Authors)**
+
+For poetry:
+
+```markdown
+---
+language: be
+work_id: who-goes-there
+author_id: kupala-yanka
+title: Хто там ідзе?
+content_type: poem
+translator: null
+translation_year: null
+---
+
+Хто там ідзе? Хто там ідзе
+У гэтай цемры ноччы?
+
+— Свой, брат, свой! Беларус наш,
+Што ноччу ў полі сеча.
+
+— Ідзі ж сюды, садзіся тут.
+— Не магу. Няма часу.
+
+— А што ж ты нясеш? Куды ж ідзеш?
+— На стрэчу дню. Свабоду.
+```
+
+For prose:
+
+```markdown
+---
+language: en
+work_id: story-example
+author_id: author-id
+title: Story Title
+content_type: prose
+translator: Translator Name
+translation_year: 2024
+notes:
+  - reference: paragraph:2
+    text: Cultural context note...
+---
+
+The first paragraph of the story...
+
+The second paragraph continues the narrative...
+
+The third paragraph concludes the section.
+```
+
+**Key points:**
+- Start with YAML frontmatter between `---` markers
+- Separate stanzas/paragraphs with blank lines
+- Lines within a stanza stay on separate lines
+- Translator notes go in the frontmatter
+
+**Build Process:**
+
+Run `python3 build.py` to convert Markdown files to JSON:
+
+```bash
+python3 build.py
+```
+
+This generates the JSON files automatically from your Markdown sources.
+
 ### Content Files (`authors/{author-id}/works/{work-id}/content/{lang}.json`)
+
+**JSON Format (Auto-generated for API Consumption)**
+
+The JSON format is generated automatically from Markdown sources. You can also create JSON files directly if needed.
 
 ```json
 {

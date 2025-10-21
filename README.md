@@ -29,14 +29,17 @@ awesome-bel-lit/
 │           └── {work-id}/
 │               ├── metadata.json
 │               └── content/
-│                   ├── be.json  # Belarusian (original)
-│                   ├── en.json  # English
+│                   ├── be.md      # Belarusian (Markdown - for authors)
+│                   ├── be.json    # Belarusian (JSON - auto-generated)
+│                   ├── en.md      # English (Markdown)
+│                   ├── en.json    # English (JSON - auto-generated)
 │                   └── ...
 ├── metadata/            # Repository-wide metadata
 │   ├── languages.json   # Supported languages
 │   └── index.json       # Complete content index
-└── translations/        # Translation progress
-    └── status.json
+├── translations/        # Translation progress
+│   └── status.json
+└── build.py            # Converts .md to .json
 ```
 
 ## Quick Start
@@ -55,11 +58,32 @@ ls authors/
 cat authors/kupala-yanka/info.json
 ls authors/kupala-yanka/works/
 
-# Read a work in Belarusian
+# Read a work in Belarusian (Markdown - easy to read!)
+cat authors/kupala-yanka/works/who-goes-there/content/be.md
+
+# Or use the JSON format (for API consumption)
 cat authors/kupala-yanka/works/who-goes-there/content/be.json
 
 # Read a translation
-cat authors/kupala-yanka/works/who-goes-there/content/en.json
+cat authors/kupala-yanka/works/who-goes-there/content/en.md
+```
+
+### Add a Translation
+
+```bash
+# 1. Copy the original
+cd authors/kupala-yanka/works/who-goes-there/content/
+cp be.md es.md  # For Spanish
+
+# 2. Edit es.md - it's just Markdown with frontmatter!
+# 3. Build JSON files
+cd ../../../..
+python3 build.py
+
+# 4. Validate
+python3 validate.py
+
+# 5. Commit and submit PR
 ```
 
 ### Use in Your Application
@@ -84,16 +108,19 @@ console.log(content.title); // "Who Goes There?"
 
 We welcome contributions! Here's how you can help:
 
-1. 🌐 **Translate works** into new languages
+1. 🌐 **Translate works** - Write in easy-to-edit **Markdown format**
 2. ✍️ **Add new works** by existing authors
 3. 👤 **Add new authors** and their works
 4. ✏️ **Improve existing translations**
 5. 🐛 **Fix errors** in content or metadata
 
+**New!** Content is now written in **Markdown** (much easier than JSON!) and automatically converted to JSON for API use. See [FORMAT.md](FORMAT.md) for details.
+
 See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ## Documentation
 
+- [FORMAT.md](FORMAT.md) - **NEW!** Markdown vs JSON format guide
 - [STRUCTURE.md](STRUCTURE.md) - Detailed structure and naming conventions
 - [CONTRIBUTING.md](CONTRIBUTING.md) - How to contribute
 - [LICENSE](LICENSE) - CC0 1.0 Universal (Public Domain)
