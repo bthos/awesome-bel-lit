@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2024-10-21",
+  "authors": [
+    {
+      "id": "kupala-yanka",
+      "name": {
+        "be": "Янка Купала",
+        "en": "Yanka Kupala"
+      },
+      "works_count": 1,
+      "works": [
+        {
+          "id": "who-goes-there",
+          "title": {
+            "be": "Хто там ідзе?",
+            "en": "Who Goes There?"
+          },
+          "type": "poem",
+          "year": 1913,
+          "available_languages": ["be", "en"]
+        }
+      ]
+    }
+  ],
+  "statistics": {
+    "total_authors": 1,
+    "total_works": 1,
+    "total_translations": 2,
+    "languages_with_content": ["be", "en"]
+  }
+}

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Awesome Belarusian Literature - Example</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .author-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+        }
+        .work-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .language-selector {
+            margin: 20px 0;
+        }
+        select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+        .stanza {
+            margin: 15px 0;
+            padding-left: 20px;
+            border-left: 2px solid #e0e0e0;
+        }
+        .line {
+            margin: 5px 0;
+        }
+        .translator {
+            font-style: italic;
+            color: #666;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .error {
+            color: #e74c3c;
+            padding: 20px;
+            background: #fadbd8;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🇧🇾 Awesome Belarusian Literature</h1>
+    <p>A demonstration of how to integrate the repository with a front-end application.</p>
+
+    <div class="language-selector">
+        <label for="language">Select Language: </label>
+        <select id="language" onchange="loadContent()">
+            <option value="be">🇧🇾 Belarusian</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="ru">🇷🇺 Russian</option>
+        </select>
+    </div>
+
+    <div id="content">
+        <div class="loading">Loading...</div>
+    </div>
+
+    <script>
+        const REPO_URL = 'https://raw.githubusercontent.com/bthos/awesome-bel-lit/main';
+        let currentLanguage = 'be';
+
+        async function fetchJSON(path) {
+            const response = await fetch(`${REPO_URL}/${path}`);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch ${path}`);
+            }
+            return await response.json();
+        }
+
+        async function loadAuthorInfo(authorId, language) {
+            const info = await fetchJSON(`authors/${authorId}/info.json`);
+            return {
+                name: info.names[language] || info.names.en,
+                bio: info.biography[language] || info.biography.en,
+                ...info
+            };
+        }
+
+        async function loadWork(authorId, workId, language) {
+            try {
+                const content = await fetchJSON(
+                    `authors/${authorId}/works/${workId}/content/${language}.json`
+                );
+                const metadata = await fetchJSON(
+                    `authors/${authorId}/works/${workId}/metadata.json`
+                );
+                return { content, metadata };
+            } catch (error) {
+                // If translation doesn't exist, fall back to Belarusian
+                if (language !== 'be') {
+                    return await loadWork(authorId, workId, 'be');
+                }
+                throw error;
+            }
+        }
+
+        function renderPoem(content) {
+            let html = `<h2>${content.title}</h2>`;
+            
+            for (const stanza of content.content) {
+                html += '<div class="stanza">';
+                for (const line of stanza.lines) {
+                    html += `<div class="line">${line}</div>`;
+                }
+                html += '</div>';
+            }
+
+            if (content.translator) {
+                html += `<div class="translator">Translated by: ${content.translator} (${content.translation_year})</div>`;
+            }
+
+            return html;
+        }
+
+        async function loadContent() {
+            const contentDiv = document.getElementById('content');
+            const language = document.getElementById('language').value;
+            currentLanguage = language;
+
+            try {
+                contentDiv.innerHTML = '<div class="loading">Loading...</div>';
+
+                // Load index to get list of authors
+                const index = await fetchJSON('metadata/index.json');
+                
+                let html = '';
+
+                // Load each author
+                for (const authorData of index.authors) {
+                    const author = await loadAuthorInfo(authorData.id, language);
+                    
+                    html += `
+                        <div class="author-card">
+                            <h2>${author.name}</h2>
+                            <p>${author.bio}</p>
+                            <p><small>${author.birth_year} - ${author.death_year || 'present'}</small></p>
+                        </div>
+                    `;
+
+                    // Load each work
+                    for (const workData of authorData.works) {
+                        const { content, metadata } = await loadWork(
+                            authorData.id,
+                            workData.id,
+                            language
+                        );
+
+                        html += '<div class="work-card">';
+                        
+                        if (content.content_type === 'poem') {
+                            html += renderPoem(content);
+                        }
+                        
+                        html += `<p><small>Written: ${metadata.year_written || 'Unknown'}</small></p>`;
+                        html += `<p><small>Available in: ${metadata.available_translations.join(', ')}</small></p>`;
+                        html += '</div>';
+                    }
+                }
+
+                contentDiv.innerHTML = html;
+
+            } catch (error) {
+                contentDiv.innerHTML = `
+                    <div class="error">
+                        <strong>Error loading content:</strong> ${error.message}
+                        <br><br>
+                        <small>Make sure you're viewing this through a web server and the repository is accessible.</small>
+                    </div>
+                `;
+                console.error('Error:', error);
+            }
+        }
+
+        // Load content when page loads
+        window.addEventListener('DOMContentLoaded', loadContent);
+    </script>
+</body>
+</html>

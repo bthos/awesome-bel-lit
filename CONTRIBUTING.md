@@ -1,0 +1,238 @@
+# Contributing to Awesome Belarusian Literature
+
+Thank you for your interest in contributing to this project! This guide will help you add translations and new content to the repository.
+
+## Ways to Contribute
+
+1. **Translate existing works** into new languages
+2. **Add new works** by existing authors
+3. **Add new authors** and their works
+4. **Improve existing translations**
+5. **Fix errors** in metadata or content
+6. **Improve documentation**
+
+## Before You Start
+
+1. Check the [STRUCTURE.md](STRUCTURE.md) file to understand the repository organization
+2. Look at existing examples in the `authors/` directory
+3. Make sure your contribution doesn't duplicate existing content
+4. For translations, ensure you have the right to contribute the translation
+
+## Adding a Translation
+
+### Step 1: Fork and Clone
+
+```bash
+# Fork the repository on GitHub, then:
+git clone https://github.com/YOUR-USERNAME/awesome-bel-lit.git
+cd awesome-bel-lit
+git checkout -b translation/work-name-language-code
+```
+
+### Step 2: Find the Work
+
+Navigate to the work you want to translate:
+```bash
+cd authors/{author-id}/works/{work-id}/content/
+```
+
+### Step 3: Create Translation File
+
+Copy the original Belarusian content:
+```bash
+cp be.json {language-code}.json
+```
+
+### Step 4: Translate
+
+Edit the new file with your translation:
+- Translate the `title` field
+- Translate all content in the `content` array
+- Add your name to `translator` field
+- Add current year to `translation_year` field
+- Add cultural notes if needed in `notes` array
+
+Example:
+```json
+{
+  "language": "en",
+  "work_id": "who-goes-there",
+  "author_id": "kupala-yanka",
+  "title": "Who Goes There?",
+  "content_type": "poem",
+  "structure": "stanzas",
+  "content": [
+    {
+      "type": "stanza",
+      "number": 1,
+      "lines": [
+        "Who goes there? Who goes there",
+        "In this dark night?"
+      ]
+    }
+  ],
+  "translator": "Your Name",
+  "translation_year": 2024,
+  "notes": []
+}
+```
+
+### Step 5: Update Metadata
+
+Edit the work's `metadata.json` file to include your language:
+```json
+{
+  "available_translations": ["be", "en", "ru", "your-language-code"]
+}
+```
+
+### Step 6: Test Your Changes
+
+Validate your JSON files:
+```bash
+# Check if JSON is valid
+python3 -m json.tool authors/{author-id}/works/{work-id}/content/{lang}.json
+```
+
+### Step 7: Commit and Push
+
+```bash
+git add .
+git commit -m "Add [language] translation of [work name] by [author]"
+git push origin translation/work-name-language-code
+```
+
+### Step 8: Create Pull Request
+
+1. Go to your fork on GitHub
+2. Click "New Pull Request"
+3. Describe your translation
+4. Submit for review
+
+## Adding a New Work
+
+### Step 1: Create Work Directory
+
+```bash
+mkdir -p authors/{author-id}/works/{work-id}/content
+```
+
+### Step 2: Create Metadata
+
+Create `authors/{author-id}/works/{work-id}/metadata.json`:
+```json
+{
+  "id": "work-id",
+  "author_id": "author-id",
+  "type": "poem",
+  "titles": {
+    "be": "Беларуская назва",
+    "en": "English title"
+  },
+  "year_written": 1920,
+  "year_published": 1920,
+  "original_language": "be",
+  "available_translations": ["be"],
+  "tags": {
+    "be": ["паэзія"],
+    "en": ["poetry"]
+  }
+}
+```
+
+### Step 3: Add Original Content
+
+Create `authors/{author-id}/works/{work-id}/content/be.json` with the original Belarusian text.
+
+### Step 4: Follow Steps 6-8 from Translation Section
+
+## Adding a New Author
+
+### Step 1: Create Author Directory
+
+```bash
+mkdir -p authors/{author-id}/works
+```
+
+### Step 2: Create Author Info
+
+Create `authors/{author-id}/info.json`:
+```json
+{
+  "id": "author-id",
+  "names": {
+    "be": "Імя Аўтара",
+    "en": "Author Name"
+  },
+  "biography": {
+    "be": "Біяграфія...",
+    "en": "Biography..."
+  },
+  "birth_year": 1900,
+  "death_year": 1980,
+  "image_url": "",
+  "external_links": {
+    "wikipedia": {
+      "be": "https://be.wikipedia.org/wiki/...",
+      "en": "https://en.wikipedia.org/wiki/..."
+    }
+  }
+}
+```
+
+### Step 3: Add Works
+
+Follow the "Adding a New Work" section to add the author's works.
+
+## Naming Conventions
+
+### Author IDs
+- Use format: `lastname-firstname`
+- Transliterate from Belarusian to Latin characters
+- Use lowercase with hyphens
+- Examples: `kupala-yanka`, `kolos-yakub`
+
+### Work IDs
+- Use short, meaningful English titles
+- Use lowercase with hyphens
+- 2-5 words maximum
+- Examples: `who-goes-there`, `new-land`
+
+### Language Codes
+- Use ISO 639-1 codes (two letters)
+- Examples: `be`, `en`, `ru`, `pl`, `de`, `fr`
+
+## Quality Guidelines
+
+### For Translations
+
+1. **Accuracy**: Maintain the meaning and tone of the original
+2. **Poetry**: Preserve rhythm and structure where possible
+3. **Cultural Context**: Add notes for culturally-specific references
+4. **Grammar**: Use proper grammar and punctuation
+5. **Attribution**: Always credit yourself as translator
+
+### For Content
+
+1. **Public Domain**: Only add works in the public domain
+2. **Copyright**: Respect copyright laws for translations
+3. **Accuracy**: Verify dates, titles, and biographical information
+4. **Sources**: Cite sources for biographical information
+
+## Code of Conduct
+
+- Be respectful and constructive
+- Welcome newcomers and help them contribute
+- Focus on the content, not the contributor
+- Respect copyright and licensing
+- Give credit where credit is due
+
+## Questions?
+
+- Open an issue for questions about contributing
+- Check [STRUCTURE.md](STRUCTURE.md) for technical details
+- Look at existing examples in the repository
+
+## License
+
+By contributing, you agree that your contributions will be licensed under the CC0 1.0 Universal (Public Domain) license.

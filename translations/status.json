@@ -1,0 +1,26 @@
+{
+  "works": [
+    {
+      "author_id": "kupala-yanka",
+      "work_id": "who-goes-there",
+      "original_language": "be",
+      "translations": {
+        "be": {
+          "status": "complete",
+          "translator": "Original",
+          "last_updated": "2024-10-21"
+        },
+        "en": {
+          "status": "complete",
+          "translator": "Example Translation",
+          "last_updated": "2024-10-21"
+        }
+      },
+      "translation_progress": {
+        "completed": 2,
+        "in_progress": 0,
+        "requested": ["ru", "pl", "de"]
+      }
+    }
+  ]
+}

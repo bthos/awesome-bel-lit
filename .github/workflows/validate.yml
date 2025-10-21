@@ -1,0 +1,32 @@
+name: Validate Repository Structure
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+    
+    - name: Run validation script
+      run: python3 validate.py
+      
+    - name: Validate JSON files
+      run: |
+        echo "Checking all JSON files are valid..."
+        find . -name "*.json" -not -path "./.git/*" | while read file; do
+          echo "Validating $file"
+          python3 -m json.tool "$file" > /dev/null || exit 1
+        done
+        echo "✓ All JSON files are valid"
