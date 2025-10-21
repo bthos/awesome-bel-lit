@@ -57,21 +57,17 @@ def validate_work_metadata(filepath, author_id, work_id):
     
     errors = []
     
-    # Check required fields
-    required_fields = ['id', 'author_id', 'type', 'titles', 'original_language']
+    # Check required fields (titles and tags moved to .md files)
+    required_fields = ['type', 'original_language']
     for field in required_fields:
         if field not in data:
             errors.append(f"Missing required field: {field}")
     
-    # Check IDs match
-    if data.get('id') != work_id:
+    # Check IDs match (if present - they're auto-generated)
+    if 'id' in data and data.get('id') != work_id:
         errors.append(f"Work ID mismatch: {data.get('id')} != {work_id}")
-    if data.get('author_id') != author_id:
+    if 'author_id' in data and data.get('author_id') != author_id:
         errors.append(f"Author ID mismatch: {data.get('author_id')} != {author_id}")
-    
-    # Check titles structure
-    if 'titles' in data and not isinstance(data['titles'], dict):
-        errors.append("'titles' must be an object with language codes")
     
     return errors
 

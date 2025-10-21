@@ -9,8 +9,7 @@ This script:
 
 Directory structure:
 - content/        - SOURCE (what content authors edit)
-- public/         - GENERATED (what front-end consumes)
-- config/         - Configuration files (languages, etc.)
+- public/         - GENERATED + CONFIGURATION (what front-end consumes)
 """
 
 import json
@@ -61,6 +60,7 @@ def parse_markdown_content(markdown_path, author_id, work_id, lang_code, work_me
         "content": parsed_content,
         "translator": frontmatter.get('translator'),
         "translation_year": frontmatter.get('translation_year'),
+        "tags": frontmatter.get('tags', []),  # From .md frontmatter
         "notes": frontmatter.get('notes', [])
     }
     
@@ -105,16 +105,29 @@ def build_public_files(repo_root):
     """Build all public files from source content."""
     content_dir = repo_root / 'content'
     public_dir = repo_root / 'public'
-    config_dir = repo_root / 'config'
     
     if not content_dir.exists():
         print("Error: 'content' directory not found")
         return
     
-    # Clean and recreate public directory
+    # Clean and recreate public directory (except languages.json)
     if public_dir.exists():
+        # Save languages.json if it exists
+        languages_file = public_dir / 'languages.json'
+        languages_data = None
+        if languages_file.exists():
+            with open(languages_file, 'r', encoding='utf-8') as f:
+                languages_data = f.read()
+        
         shutil.rmtree(public_dir)
-    public_dir.mkdir(parents=True)
+        public_dir.mkdir(parents=True)
+        
+        # Restore languages.json
+        if languages_data:
+            with open(languages_file, 'w', encoding='utf-8') as f:
+                f.write(languages_data)
+    else:
+        public_dir.mkdir(parents=True)
     
     authors_dir = content_dir / 'authors'
     if not authors_dir.exists():
@@ -182,7 +195,11 @@ def build_public_files(repo_root):
             public_content_dir.mkdir(exist_ok=True)
             
             # Find all .md files and convert to JSON
+            # Also collect titles and tags from .md files
             available_languages = []
+            titles_by_lang = {}
+            tags_by_lang = {}
+            
             for md_file in sorted(work_dir.glob('*.md')):
                 try:
                     # Get language code from filename
@@ -193,6 +210,12 @@ def build_public_files(repo_root):
                     json_data, frontmatter = parse_markdown_content(
                         md_file, author_id, work_id, lang_code, work_metadata
                     )
+                    
+                    # Collect titles and tags for index
+                    if 'title' in frontmatter:
+                        titles_by_lang[lang_code] = frontmatter['title']
+                    if 'tags' in frontmatter:
+                        tags_by_lang[lang_code] = frontmatter['tags']
                     
                     # Write JSON file to public directory
                     json_file = public_content_dir / f'{lang_code}.json'
@@ -205,14 +228,23 @@ def build_public_files(repo_root):
                 except Exception as e:
                     print(f"✗ Error converting {md_file.relative_to(content_dir)}: {e}")
             
-            # Add work to index
-            works_data.append({
+            # Add work to index with titles and tags from .md files
+            work_index_entry = {
                 "id": work_id,
-                "title": work_metadata.get('titles', {}),
                 "type": work_metadata.get('type', 'unknown'),
                 "year": work_metadata.get('year_written'),
                 "available_languages": available_languages
-            })
+            }
+            
+            # Add titles if collected
+            if titles_by_lang:
+                work_index_entry['titles'] = titles_by_lang
+            
+            # Add tags if collected
+            if tags_by_lang:
+                work_index_entry['tags'] = tags_by_lang
+            
+            works_data.append(work_index_entry)
         
         # Add author to index
         authors_data.append({
@@ -239,7 +271,7 @@ def build_public_files(repo_root):
         }
     }
     
-    # Write index.json to public
+    # Write index.json to public/metadata/
     public_metadata_dir = public_dir / 'metadata'
     public_metadata_dir.mkdir(parents=True, exist_ok=True)
     
@@ -248,11 +280,12 @@ def build_public_files(repo_root):
     
     print(f"✓ Generated metadata/index.json")
     
-    # Copy languages.json from config if it exists
-    languages_file = config_dir / 'languages.json'
+    # Languages.json is already in public/ (manually maintained configuration)
+    languages_file = public_dir / 'languages.json'
     if languages_file.exists():
-        shutil.copy2(languages_file, public_metadata_dir / 'languages.json')
-        print(f"✓ Copied languages.json from config/")
+        print(f"✓ Using languages.json from public/")
+    else:
+        print(f"⚠ Warning: public/languages.json not found")
     
     print(f"\n✓ Converted {converted_count} file(s)")
     print(f"✓ Generated index with {len(authors_data)} author(s)")

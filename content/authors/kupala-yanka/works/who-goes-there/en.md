@@ -2,6 +2,10 @@
 title: Who Goes There?
 translator: Example Translation
 translation_year: 2024
+tags:
+  - poetry
+  - patriotism
+  - national revival
 notes:
   - reference: stanza:2
     text: The word 'sows' (сеча) is used metaphorically to represent working for the future of the nation.

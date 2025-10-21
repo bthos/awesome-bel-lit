@@ -19,14 +19,13 @@ awesome-bel-lit/
 │           ├── info.json # Author metadata in multiple languages
 │           └── works/    # Works by this author
 │               └── {work-id}/    # Work directory (unique ID)
-│                   ├── metadata.json  # Work metadata (no IDs)
-│                   ├── be.md          # Belarusian (original) - Markdown
-│                   ├── en.md          # English translation - Markdown
+│                   ├── metadata.json  # Work metadata (type, years)
+│                   ├── be.md          # Belarusian - with title & tags
+│                   ├── en.md          # English - with title & tags
 │                   └── ...            # Other language translations
-├── config/              # Configuration files
-│   └── languages.json   # Supported languages list
 │
-├── public/              # GENERATED - Built for front-end (DO NOT EDIT)
+├── public/              # GENERATED + CONFIG - Built for front-end
+│   ├── languages.json   # Supported languages (configuration)
 │   ├── authors/         # Processed author data
 │   │   └── {author-id}/
 │   │       ├── info.json    # Copied from source
@@ -38,8 +37,7 @@ awesome-bel-lit/
 │   │                   ├── en.json    # Auto-generated from en.md
 │   │                   └── ...
 │   └── metadata/
-│       ├── index.json       # AUTO-GENERATED from source files
-│       └── languages.json   # Copied from config/
+│       └── index.json   # AUTO-GENERATED (titles & tags from .md)
 │
 └── build.py            # Build script (converts content/ -> public/)
 ```
@@ -120,30 +118,22 @@ Location: `content/authors/{author-id}/info.json`
 
 Location: `content/authors/{author-id}/works/{work-id}/metadata.json`
 
-**Note**: `id` and `author_id` fields are NOT included in source - they're auto-generated from folder structure during build.
+**Note**: Only work-level metadata. Titles and tags are in .md files (language-specific). IDs auto-generated from folder structure.
 
 ```json
 {
   "type": "poem",
-  "titles": {
-    "be": "Хто там ідзе?",
-    "en": "Who Goes There?",
-    "ru": "Кто там идёт?"
-  },
   "year_written": 1913,
   "year_published": 1913,
-  "original_language": "be",
-  "tags": {
-    "be": ["паэзія", "патрыятызм"],
-    "en": ["poetry", "patriotism"],
-    "ru": ["поэзия", "патриотизм"]
-  }
+  "original_language": "be"
 }
 ```
 
 **Auto-generated during build:**
 - `id` - From work folder name
 - `author_id` - From author folder name
+- `titles` - Collected from all .md files
+- `tags` - Collected from all .md files
 
 ### Content Files (`content/authors/{author-id}/works/{work-id}/{lang}.md`)
 
@@ -156,6 +146,9 @@ For poetry:
 ```markdown
 ---
 title: Хто там ідзе?
+tags:
+  - паэзія
+  - патрыятызм
 ---
 
 Хто там ідзе? Хто там ідзе
@@ -170,6 +163,9 @@ For translations with attribution:
 ```markdown
 ---
 title: Who Goes There?
+tags:
+  - poetry
+  - patriotism
 translator: Translator Name
 translation_year: 2024
 notes:
@@ -197,6 +193,7 @@ The second paragraph continues the narrative...
 
 **Frontmatter fields:**
 - `title` (required) - Title in this language
+- `tags` (optional) - Array of tags in this language
 - `translator` (optional) - Translator name for translations (omit for originals)
 - `translation_year` (optional) - Year of translation
 - `notes` (optional) - Array of cultural/translation notes

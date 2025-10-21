@@ -28,13 +28,12 @@ awesome-bel-lit/
 │           ├── info.json     # Author metadata
 │           └── works/
 │               └── {work-id}/
-│                   ├── metadata.json  # Work metadata (no IDs)
-│                   ├── be.md          # Belarusian (Markdown)
-│                   ├── en.md          # English (Markdown)
+│                   ├── metadata.json  # Work metadata (type, years)
+│                   ├── be.md          # Belarusian (title + tags)
+│                   ├── en.md          # English (title + tags)
 │                   └── ...
-├── config/               # Configuration files
-│   └── languages.json    # Supported languages
-├── public/               # GENERATED - Built for front-end (auto-generated)
+├── public/               # GENERATED + CONFIG - Built for front-end
+│   ├── languages.json    # Supported languages (config)
 │   ├── authors/
 │   │   └── {author-id}/
 │   │       └── works/
@@ -43,8 +42,7 @@ awesome-bel-lit/
 │   │                   ├── be.json   # Auto-generated from be.md
 │   │                   └── en.json   # Auto-generated from en.md
 │   └── metadata/
-│       ├── index.json    # AUTO-GENERATED from source
-│       └── languages.json
+│       └── index.json    # AUTO-GENERATED (from .md files)
 └── build.py             # Converts content/ -> public/
 ```
 

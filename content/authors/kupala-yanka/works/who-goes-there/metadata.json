@@ -1,18 +1,6 @@
 {
   "type": "poem",
-  "titles": {
-    "be": "Хто там ідзе?",
-    "en": "Who Goes There?",
-    "ru": "Кто там идёт?",
-    "pl": "Kto tam idzie?"
-  },
   "year_written": 1913,
   "year_published": 1913,
-  "original_language": "be",
-  "tags": {
-    "be": ["паэзія", "патрыятызм", "нацыянальнае адраджэнне"],
-    "en": ["poetry", "patriotism", "national revival"],
-    "ru": ["поэзия", "патриотизм", "национальное возрождение"],
-    "pl": ["poezja", "patriotyzm", "odrodzenie narodowe"]
-  }
+  "original_language": "be"
 }
