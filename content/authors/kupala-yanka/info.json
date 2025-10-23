@@ -1,0 +1,26 @@
+{
+  "id": "kupala-yanka",
+  "names": {
+    "be": "Янка Купала",
+    "en": "Yanka Kupala",
+    "ru": "Янка Купала",
+    "pl": "Janka Kupała"
+  },
+  "biography": {
+    "be": "Янка Купала (сапр. Іван Дамінікавіч Луцэвіч) — класік беларускай літаратуры, народны паэт БССР. Нарадзіўся 7 ліпеня 1882 года ў вёсцы Вязынка. Аўтар вершаў, паэм, п'ес, перакладчык.",
+    "en": "Yanka Kupala (real name Ivan Daminikavich Lutsevich) is a classic of Belarusian literature and the People's Poet of the BSSR. Born on July 7, 1882, in the village of Vyazinka. Author of poems, plays, and translator.",
+    "ru": "Янка Купала (наст. Иван Доминикович Луцевич) — классик белорусской литературы, народный поэт БССР. Родился 7 июля 1882 года в деревне Вязынка. Автор стихов, поэм, пьес, переводчик.",
+    "pl": "Janka Kupała (właśc. Iwan Dominikawicz Łucewicz) — klasyk literatury białoruskiej, poeta ludowy BSRR. Urodził się 7 lipca 1882 roku we wsi Wiazinka. Autor wierszy, poematów, sztuk teatralnych, tłumacz."
+  },
+  "birth_year": 1882,
+  "death_year": 1942,
+  "image_url": "",
+  "external_links": {
+    "wikipedia": {
+      "be": "https://be.wikipedia.org/wiki/Янка_Купала",
+      "en": "https://en.wikipedia.org/wiki/Yanka_Kupala",
+      "ru": "https://ru.wikipedia.org/wiki/Купала,_Янка",
+      "pl": "https://pl.wikipedia.org/wiki/Janka_Kupała"
+    }
+  }
+}
