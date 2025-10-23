@@ -1,7 +1,7 @@
 ---
 title: Who Goes There?
 translator: Example Translation
-translation_year: 2024
+translation_year: 2025
 tags:
   - poetry
   - patriotism
