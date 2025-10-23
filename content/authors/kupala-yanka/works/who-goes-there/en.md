@@ -11,14 +11,23 @@ notes:
     text: The word 'sows' (сеча) is used metaphorically to represent working for the future of the nation.
 ---
 
-Who goes there? Who goes there
-In this darkness of night?
+And who goes there, who goes there,
+In that vast and mighty throng?
+— The Belarusians.
 
-— Your own, brother, your own! A Belarusian,
-Who sows in the field at night.
+And what do they bear on their weary backs,
+On their bloodied hands, in their bark-bound tracks?
+— Their sorrow.
 
-— Come here then, sit down.
-— I cannot. I have no time.
+And where do they carry that sorrow untold,
+Where do they show it, so bitter, so bold?
+— To the wide world.
 
-— And what do you carry? Where are you going?
-— To meet the day. Freedom.
+And who was it taught them, millions strong,
+To carry their wrong, to awaken from long
+Dreams of silence?
+— Misery, sorrow.
+
+And what do they seek, what stirs their dream,
+They, scorned through ages, the blind, the dumb?
+— To be called human.
