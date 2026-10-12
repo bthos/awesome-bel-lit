@@ -12,7 +12,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "test": "node --test src/lib/"
+    "test": "node --test \"src/lib/**/*.test.ts\""
   },
   "devDependencies": {
     "@types/node": "^26.6.5",
