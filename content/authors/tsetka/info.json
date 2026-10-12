@@ -1,0 +1,22 @@
+{
+  "id": "tsetka",
+  "names": {
+    "be": "Цётка",
+    "en": "Tsetka (Alaiza Pashkevich)",
+    "ru": "Тётка",
+    "pl": "Ciotka"
+  },
+  "biography": {
+    "be": "Цётка (сапр. Алаіза Пашкевіч, 1876–1916) — беларуская паэтка, празаік, публіцыстка, фалькларыстка і дзяячка нацыянальнага адраджэння. Аўтар зборніка вершаў «Скрыпка беларуская».",
+    "en": "Tsetka (real name Alaiza Pashkevich, 1876–1916) was a Belarusian poet, prose writer, publicist, folklorist and figure of the national revival. She is the author of the verse collection \"Skrypka belaruskaia\" (\"The Belarusian Fiddle\")."
+  },
+  "birth_year": 1876,
+  "death_year": 1916,
+  "image_url": "",
+  "external_links": {
+    "wikipedia": {
+      "be": "https://be.wikipedia.org/wiki/Цётка",
+      "en": "https://en.wikipedia.org/wiki/Alaiza_Pashkevich"
+    }
+  }
+}

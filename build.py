@@ -60,8 +60,10 @@ def parse_markdown_content(markdown_path, author_id, work_id, lang_code, work_me
         "content": parsed_content,
         "translator": frontmatter.get('translator'),
         "translation_year": frontmatter.get('translation_year'),
+        "orthography": frontmatter.get('orthography'),  # Optional: spelling standard of this text
         "tags": frontmatter.get('tags', []),  # From .md frontmatter
-        "notes": frontmatter.get('notes', [])
+        "notes": frontmatter.get('notes', []),
+        "vocabulary": frontmatter.get('vocabulary', [])  # Optional word glosses (learner aid)
     }
     
     return json_data, frontmatter
@@ -281,13 +283,36 @@ def build_public_files(repo_root):
         json.dump(index_data, f, ensure_ascii=False, indent=2)
     
     print(f"✓ Generated metadata/index.json")
-    
-    # Languages.json is in public/metadata/ (manually maintained configuration)
+
+    # languages.json is manually maintained configuration, preserved across rebuilds
     languages_file = public_metadata_dir / 'languages.json'
+    supported = []
     if languages_file.exists():
+        with open(languages_file, 'r', encoding='utf-8') as f:
+            supported = [lang['code'] for lang in json.load(f).get('languages', [])]
         print(f"✓ Using languages.json from public/metadata/")
     else:
-        print(f"⚠ Warning: public/metadata/languages.json not found")
+        print(f"⚠ Warning: public/metadata/languages.json not found; translation status will list no needed languages")
+
+    # Generate translations/status.json: what exists and what is still needed per work
+    status_works = []
+    for author in authors_data:
+        for work in author['works']:
+            have = work['available_languages']
+            status_works.append({
+                "author_id": author['id'],
+                "work_id": work['id'],
+                "available_languages": have,
+                "needed_languages": [code for code in supported if code not in have],
+            })
+    translations_dir = public_dir / 'translations'
+    translations_dir.mkdir(parents=True, exist_ok=True)
+    with open(translations_dir / 'status.json', 'w', encoding='utf-8') as f:
+        json.dump(
+            {"last_updated": index_data['last_updated'], "languages": supported, "works": status_works},
+            f, ensure_ascii=False, indent=2,
+        )
+    print(f"✓ Generated translations/status.json")
     
     print(f"\n✓ Converted {converted_count} file(s)")
     print(f"✓ Generated index with {len(authors_data)} author(s)")

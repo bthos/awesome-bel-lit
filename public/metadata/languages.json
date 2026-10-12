@@ -1,0 +1,15 @@
+{
+  "languages": [
+    { "code": "be", "native": "Беларуская", "english": "Belarusian" },
+    { "code": "en", "native": "English", "english": "English" },
+    { "code": "ru", "native": "Русский", "english": "Russian" },
+    { "code": "pl", "native": "Polski", "english": "Polish" },
+    { "code": "de", "native": "Deutsch", "english": "German" },
+    { "code": "fr", "native": "Français", "english": "French" },
+    { "code": "es", "native": "Español", "english": "Spanish" },
+    { "code": "it", "native": "Italiano", "english": "Italian" },
+    { "code": "uk", "native": "Українська", "english": "Ukrainian" },
+    { "code": "lt", "native": "Lietuvių", "english": "Lithuanian" },
+    { "code": "lv", "native": "Latviešu", "english": "Latvian" }
+  ]
+}

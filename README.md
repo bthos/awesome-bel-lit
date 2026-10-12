@@ -32,19 +32,22 @@ awesome-bel-lit/
 │                   ├── be.md          # Belarusian (title + tags)
 │                   ├── en.md          # English (title + tags)
 │                   └── ...
-├── public/               # GENERATED + CONFIG - Built for front-end
-│   └── metadata/
-│       ├── languages.json    # Supported languages (config)
-│   ├── authors/
-│   │   └── {author-id}/
-│   │       └── works/
-│   │           └── {work-id}/
-│   │               └── content/
-│   │                   ├── be.json   # Auto-generated from be.md
-│   │                   └── en.json   # Auto-generated from en.md
-│   └── metadata/
-│       └── index.json    # AUTO-GENERATED (from .md files)
-└── build.py             # Converts content/ -> public/
+├── public/               # GENERATED (gitignored) + CONFIG - Built for front-end
+│   ├── metadata/
+│   │   ├── languages.json    # Supported languages (config, committed)
+│   │   └── index.json        # AUTO-GENERATED (from .md files)
+│   ├── translations/
+│   │   └── status.json       # AUTO-GENERATED: available / needed languages per work
+│   └── authors/
+│       └── {author-id}/
+│           ├── info.json         # Copied from content/
+│           └── works/
+│               └── {work-id}/
+│                   ├── metadata.json
+│                   └── content/
+│                       ├── be.json   # Auto-generated from be.md
+│                       └── en.json   # Auto-generated from en.md
+└── build.py              # Converts content/ -> public/
 ```
 
 ## Quick Start
@@ -144,6 +147,12 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 - **Yanka Kupala** (1882-1942) - Классік беларускай літаратуры
   - "Who Goes There?" / "Хто там ідзе?" (1913) - Available in: Belarusian, English
+  - 13 more poems and narrative poems (e.g. "Адвечная песня", "Курган", "Магіла льва") - Belarusian only
+- **Maksim Bahdanovich** (1891-1917) - 15 poems and 2 short stories (e.g. "Летапісец", "Слуцкія ткачыхі", "Апокрыф") - Belarusian only
+- **Francishak Bahushevich** (1840-1900) - 8 poems and 3 short stories (e.g. "Мая дудка", "Кепска будзе!", "Тралялёначка") - Belarusian only
+- **Tsetka** (Alaiza Pashkevich, 1876-1916) - 4 poems, 1 story and 1 article (e.g. "Мора", "Шануйце роднае слова!") - Belarusian only
+
+Texts imported from the public-domain collection of [Беларуская Палічка](https://knihi.com/); each `be.md` records its page in a `source` frontmatter field.
 
 *More authors and works coming soon! Contribute to help expand the collection.*
 
@@ -152,6 +161,25 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 | Work | Original | Available Languages | Needed |
 |------|----------|-------------------|--------|
 | Who Goes There? | 🇧🇾 Belarusian | 🇬🇧 English | 🇷🇺 🇵🇱 🇩🇪 🇫🇷 🇪🇸 |
+
+## Website
+
+`web/` is a static reader and Belarusian-learning site built from the generated `public/` JSON (Vite + TypeScript, no backend).
+
+- **Library, author and work pages** with the original beside a translation (side by side, stacked, or tap-to-reveal)
+- **Tap any word** for its Latin-letter form (Łacinka), dictionary form and meaning; save words and review them as flashcards
+- **Learn page**: alphabet with sounds, the rules that surprise new readers, and a Cyrillic→Łacinka converter
+- **Translation progress** matrix with one-click "add a translation" links
+
+```bash
+python3 build.py          # content/ -> public/
+npm install               # from the repo root (npm workspaces: web/)
+npm run dev               # copies public/ into web/public/data, then serves on :5173
+npm run build             # static site in web/dist (deployed by .github/workflows/deploy.yml)
+npm test                  # transliteration tests
+```
+
+The root `package.json` is an npm workspace root: `build`, `typecheck` and `test` run in every app listed under `workspaces`. To add an app, create its folder with its own `package.json` and add the folder to `workspaces`.
 
 ## For Front-End Developers
 
@@ -201,12 +229,12 @@ https://raw.githubusercontent.com/bthos/awesome-bel-lit/main/{path}
 
 ### Endpoints
 
-- Author info: `/authors/{author-id}/info.json`
-- Work metadata: `/authors/{author-id}/works/{work-id}/metadata.json`
-- Work content: `/authors/{author-id}/works/{work-id}/content/{lang}.json`
+- Author info: `public/authors/{author-id}/info.json`
+- Work metadata: `public/authors/{author-id}/works/{work-id}/metadata.json`
+- Work content: `public/authors/{author-id}/works/{work-id}/content/{lang}.json`
 - Languages list: `public/metadata/languages.json`
-- Complete index: `/metadata/index.json`
-- Translation status: `/translations/status.json`
+- Complete index: `public/metadata/index.json`
+- Translation status: `public/translations/status.json`
 
 ## License
 

@@ -1,0 +1,14 @@
+{
+  "name": "awesome-bel-lit",
+  "private": true,
+  "description": "Workspace root: runs scripts of every app listed in \"workspaces\"",
+  "workspaces": [
+    "web"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w web",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm test --workspaces --if-present"
+  }
+}

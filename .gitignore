@@ -1,6 +1,8 @@
-# Generated files (except languages.json which is configuration)
+# Generated files (except public/metadata/languages.json which is configuration)
 public/*
-!public/languages.json
+!public/metadata/
+public/metadata/*
+!public/metadata/languages.json
 
 # Node modules
 node_modules/
@@ -22,6 +24,7 @@ out/
 # IDE
 .vscode/
 .idea/
+.omp/
 *.swp
 *.swo
 *~

@@ -73,6 +73,8 @@ All Markdown files **must** start with YAML frontmatter between `---` markers.
 title: Work Title              # Title in this language (REQUIRED)
 translator: Name               # Translator name (OPTIONAL, omit for originals)
 translation_year: 2024         # Year translated (OPTIONAL)
+orthography: official-1957     # Spelling standard of the text (OPTIONAL)
+source: https://example.org/x  # Where the text was taken from (OPTIONAL)
 notes:                         # Translation/cultural notes (OPTIONAL)
   - reference: stanza:2
     text: Note text here
@@ -91,7 +93,10 @@ notes:                         # Translation/cultural notes (OPTIONAL)
 **Optional fields:**
 - `translator` - Name of translator (omit for original works)
 - `translation_year` - Year of translation
+- `orthography` - Spelling standard: `classical-YYYY` (тарашкевіца) or `official-YYYY` (official orthography); YYYY is the edition of the rules. Exposed as `orthography` in the generated JSON (`null` when unset)
+- `source` - URL the text was taken from (kept in the Markdown only)
 - `notes` - Array of translation or cultural notes
+- `vocabulary` - Word glosses for the original text (powers tap-a-word help on the website)
 
 ### Content Body
 
@@ -115,6 +120,21 @@ notes:
     text: The word 'сеча' (sows) is metaphorical for nation-building.
   - reference: paragraph:5
     text: This references a historical event from 1863.
+```
+
+### Vocabulary (optional)
+
+Add glosses to the **original** text (e.g. `be.md`) so the website can explain words when readers tap them.
+`word` is the form exactly as it appears in the text (matching ignores case); `lemma` is the dictionary form;
+`gloss` has one entry per language (`en` is the fallback).
+
+```yaml
+vocabulary:
+  - word: нясуць
+    lemma: несці
+    pos: verb
+    gloss:
+      en: they carry
 ```
 
 ## JSON Format (Auto-Generated)
@@ -194,8 +214,8 @@ python3 build.py
 ```
 Building JSON files from Markdown sources...
 
-✓ Converted authors/kupala-yanka/works/who-goes-there/content/be.md -> be.json
-✓ Converted authors/kupala-yanka/works/who-goes-there/content/en.md -> en.json
+✓ Converted authors\kupala-yanka\works\who-goes-there\be.md -> authors\kupala-yanka\works\who-goes-there\content\be.json
+✓ Converted authors\kupala-yanka\works\who-goes-there\en.md -> authors\kupala-yanka\works\who-goes-there\content\en.json
 
 Converted 2 file(s)
 
@@ -204,7 +224,7 @@ Converted 2 file(s)
 
 ### How It Works
 
-1. Finds all `.md` files in `authors/*/works/*/content/`
+1. Finds all `.md` files in `content/authors/*/works/*/`
 2. Parses YAML frontmatter
 3. Parses content body (stanzas or paragraphs)
 4. Generates corresponding `.json` file
@@ -231,21 +251,21 @@ This checks:
 1. **Create/Edit Markdown file** - Easy, natural writing
 2. **Run build script** - Generates JSON automatically
 3. **Validate** - Ensures everything is correct
-4. **Commit both** - Markdown and JSON files
+4. **Commit** - Only the Markdown source (`public/` is generated and gitignored)
 
 ### For Translators
 
 1. **Copy original `.md` file** - Much easier than copying JSON
-2. **Edit frontmatter** - Update language, title, translator
+2. **Edit frontmatter** - Update title, translator
 3. **Translate content** - Natural text editing
 4. **Run build** - Generates JSON
-5. **Submit PR** - Both formats included
+5. **Submit PR** - Markdown sources only
 
 ### For Developers
 
 - **Read JSON files** - Use for API consumption
 - **Ignore Markdown files** - Optional, JSON has all data
-- **Fetch from GitHub** - Use raw content URLs
+- **Build locally** - `python3 build.py` generates `public/`; the website deploys it (see README)
 
 ## Best Practices
 
@@ -253,7 +273,7 @@ This checks:
 
 - Write content in Markdown format
 - Run `build.py` after editing Markdown
-- Commit both `.md` and `.json` files
+- Commit only the `.md` sources (`public/` is generated and gitignored)
 - Use blank lines to separate stanzas/paragraphs
 - Add notes in YAML frontmatter
 
@@ -272,7 +292,6 @@ Make sure your file starts with `---` and has matching closing `---`:
 
 ```markdown
 ---
-language: en
 title: My Title
 ...
 ---
@@ -290,12 +309,10 @@ content_type: poem  # or 'prose'
 
 ### Missing Fields Error
 
-Required frontmatter fields:
-- `language`
-- `work_id`
-- `author_id`
+Required frontmatter field:
 - `title`
-- `content_type`
+
+`language`, `work_id`, `author_id` and `content_type` are derived from the folder structure and `metadata.json`.
 
 ### Build Script Not Found
 
@@ -320,7 +337,7 @@ If you have existing JSON files and want to convert to Markdown:
 |--------|----------|------|
 | **Purpose** | Source format for authors | API consumption |
 | **Edit** | Yes - primary format | No - auto-generated |
-| **Commit** | Yes | Yes |
+| **Commit** | Yes | No (generated, gitignored) |
 | **Read** | Easy - natural text | Structured data |
 | **Create** | Manually | Via `build.py` |
 

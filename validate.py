@@ -6,6 +6,7 @@ Checks JSON files for validity and structure consistency in the PUBLIC directory
 
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -96,6 +97,11 @@ def validate_work_content(filepath, work_id, author_id, lang_code):
     # Check content is an array
     if 'content' in data and not isinstance(data['content'], list):
         errors.append("'content' must be an array")
+
+    # Orthography is optional; when present it must be classical-YYYY or official-YYYY
+    orthography = data.get('orthography')
+    if orthography is not None and not re.fullmatch(r'(classical|official)-\d{4}', str(orthography)):
+        errors.append(f"Invalid orthography: {orthography!r} (expected classical-YYYY or official-YYYY)")
     
     return errors
 
@@ -184,15 +190,15 @@ def main():
                                 for err in errors:
                                     errors_found.append(f"{content_file}: {err}")
     
-    # Validate metadata files
-    metadata_dir = public_dir / 'metadata'
-    if metadata_dir.exists():
-        for metadata_file in metadata_dir.glob('*.json'):
-            total_files += 1
-            valid, error = validate_json_file(metadata_file)
-            if not valid:
-                invalid_files += 1
-                errors_found.append(f"{metadata_file}: {error}")
+    # Validate metadata and translation-status files
+    for extra_dir in (public_dir / 'metadata', public_dir / 'translations'):
+        if extra_dir.exists():
+            for extra_file in extra_dir.glob('*.json'):
+                total_files += 1
+                valid, error = validate_json_file(extra_file)
+                if not valid:
+                    invalid_files += 1
+                    errors_found.append(f"{extra_file}: {error}")
     
     # Print results
     print(f"Validation complete!")

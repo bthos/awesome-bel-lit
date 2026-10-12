@@ -24,21 +24,22 @@ awesome-bel-lit/
 │                   ├── en.md          # English - with title & tags
 │                   └── ...            # Other language translations
 │
-├── public/              # GENERATED + CONFIG - Built for front-end
-│   └── metadata/
-│       ├── languages.json   # Supported languages (configuration)
-│   ├── authors/         # Processed author data
-│   │   └── {author-id}/
-│   │       ├── info.json    # Copied from source
-│   │       └── works/
-│   │           └── {work-id}/
-│   │               ├── metadata.json  # With auto-added IDs
-│   │               └── content/       # Generated JSON files
-│   │                   ├── be.json    # Auto-generated from be.md
-│   │                   ├── en.json    # Auto-generated from en.md
-│   │                   └── ...
-│   └── metadata/
-│       └── index.json   # AUTO-GENERATED (titles & tags from .md)
+├── public/              # GENERATED (gitignored) + CONFIG - Built for front-end
+│   ├── metadata/
+│   │   ├── languages.json   # Supported languages (configuration, committed)
+│   │   └── index.json       # AUTO-GENERATED (titles & tags from .md)
+│   ├── translations/
+│   │   └── status.json      # AUTO-GENERATED: available / needed languages per work
+│   └── authors/             # Processed author data
+│       └── {author-id}/
+│           ├── info.json    # Copied from source
+│           └── works/
+│               └── {work-id}/
+│                   ├── metadata.json  # With auto-added IDs
+│                   └── content/       # Generated JSON files
+│                       ├── be.json    # Auto-generated from be.md
+│                       ├── en.json    # Auto-generated from en.md
+│                       └── ...
 │
 └── build.py            # Build script (converts content/ -> public/)
 ```
@@ -197,6 +198,8 @@ The second paragraph continues the narrative...
 - `tags` (optional) - Array of tags in this language
 - `translator` (optional) - Translator name for translations (omit for originals)
 - `translation_year` (optional) - Year of translation
+- `orthography` (optional) - Spelling standard of a Belarusian text: `classical-YYYY` (тарашкевіца) or `official-YYYY` (official orthography), YYYY = edition of the rules
+- `source` (optional) - URL the text was taken from
 - `notes` (optional) - Array of cultural/translation notes
 
 **Auto-derived fields** (from folder structure):
@@ -293,7 +296,6 @@ For prose works:
 2. **Copy the original content file** (`.md`) to your target language
    - Example: `cp content/authors/{author-id}/works/{work-id}/be.md content/authors/{author-id}/works/{work-id}/en.md`
 3. **Translate the content**:
-   - Update `language` field in frontmatter
    - Translate `title` field
    - Translate all content (preserve structure)
    - Add your name in `translator` field
